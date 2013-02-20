@@ -708,3 +708,6 @@ a.socio_contact_flickr {background: transparent url('../images/socio_icons/flick
 	height: 17px;
 	margin: 15px auto;
 }
+#about-image {
+	padding-left: 20px!important;;
+}
