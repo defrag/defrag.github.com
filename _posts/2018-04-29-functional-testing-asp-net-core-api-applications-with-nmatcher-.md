@@ -10,17 +10,17 @@ tags:
     - NMatcher
 ---
 
-This post aims to show alternative approach to functional API testing. ASP.NET Core ships with great 
-`TestServer` class, which tremendously eases any kind of functional and integration testing on the platform. 
-Most of the examples of testing APIs you'll find follows one of the two approaches: either unit testing controller or 
-using `TestServer`, where we create HTTP request, send it over and assert the response. 
+This post aims to show alternative approach to functional API testing. ASP.NET Core ships with great
+`TestServer` class, which tremendously eases any kind of functional and integration testing on the platform.
+Most of the examples of testing APIs you'll find follows one of the two approaches: either unit testing controller or
+using `TestServer`, where we create HTTP request, send it over and assert the response.
 
 Lets go throught each of them and see what they offer.
 
 ## Unit testing controllers
 
-The example is very straightforward and there isn't much to talk about here. 
-We set up our test subject with a mocked repository, call the actual method on a controller 
+The example is very straightforward and there isn't much to talk about here.
+We set up our test subject with a mocked repository, call the actual method on a controller
 and assert the view model returned from our invocation.
 
 ```csharp
@@ -43,18 +43,18 @@ public async Task it_returnes_the_list_of_venues_when_calling_index_method()
 }
  ```
 
-In my personal opinion, there isn't much too gain from this kind of testing. Controller usually
+In my personal opinion, there isn't much too gain from this kind of testing. The controller usually
 sits at one of the highest layers, the User Interface Layer. The further we go up through the layers
-from Domain up to the User Interface, the value of pure unit tests itself diminishes. The test like above
+from Domain up to the User Interface, the value of pure unit tests itself diminishes. Like the test above
 gives us no confidence that our application works at all. We don't check if our dependencies are wired up properly,
-if the request was being translated properly, nor if the response was send to the end user properly. We don't even
+if the request was being translated properly, or if the response was sent to the end user properly. We don't even
 check which fields we exposed as part of the public API and which we didn't.
 
-In light of those observations, the second approach seems much more reasonable.
+In light of those observations, this second approach seems much more reasonable.
 
 ## Integration testing using TestServer
 
-Lets see how our examples with venues will look up using the `TestServer`.
+Let's see how our examples with venues will look up using the `TestServer`.
 
 ```csharp
 public class VenueControllerIntegrationTest
@@ -94,20 +94,20 @@ public class VenueControllerIntegrationTest
 }
 ```
 
-This high level test already gives us more confidence, as we make sure the dependencies were wired
+This high level test already gives us more confidence, by making sure the dependencies are wired
 up properly during runtime, our request was translated by the server and the response was successful.
 
-We're left with small issue. Does this test really serve as great documentation? Assert phase only checks if the value was deserialized properly into view model.
+We're left with a small issue. Does this test really serve as great documentation? The assert phase only checks if the value was deserialized properly into view model.
 If we would like to figure out the actual response, we would have to drill down into view model and figure out how
-its being serialized for the response and fit the pieces together in our head. 
+its being serialized for the response and fit the pieces together in our head.
 
-This is where the [NMatcher](https://github.com/defrag/NMatcher) library comes in play. Lets rework our test case in the next section while expanding our case with additional one for creation of the venue.
+This is where the [NMatcher](https://github.com/defrag/NMatcher) library comes in play. Lets rework our test case in the next section while expanding our case with an additional one for the creation of the venue.
 
 ## Functional testing using TestServer and NMatcher
 
 We can use NMatcher to assert the proper JSON and leave out any application specific details when testing
 our path from `Request` to `Response`. This make our test fully functional, as we take the raw input and assert the
-raw output. This way we make sure every piece of code responsible for manipulating the HTTP pipeline was hit, all request translation was done properly and the response output is what we expect. It also serves as a great documentation for any developer that wants to use our API (and for ourselves as well). We also can use the its functionality to omit some 
+raw output. This way we make sure every piece of code responsible for manipulating the HTTP pipeline was hit, all request translations were done properly and the response output is what we expect. It also serves as great documentation for any developer that wants to use our API (and for ourselves as well). We also can use its functionality to omit some
 parts of the response we don't care about.
 
 ```csharp
@@ -167,13 +167,13 @@ public async Task test_creation_of_venues()
             ""CreatedAt"": ""@string@.IsDateTime()""
         }
     ");
-    
+
 }
 
 ```
 
 As we can see, in order to make our testing easier, we introduced the notion of `matchers`, which serves as a
-container for values that we cannot predict. Those values can be guids, auto increment ids, dates, times etc. 
+container for values that we cannot predict. Those values can be guids, auto increment ids, dates, times etc.
 
 Check out the NMatcher [github page](https://github.com/defrag/NMatcher) for full documentation and what it can do for You.
 Play around with the alternative approach to testing APIs with ASP.NET Core and perhaps it will fit your needs, as it fit mine.
