@@ -101,14 +101,14 @@ We're left with small issue. Does this test really serve as great documentation?
 If we would like to figure out the actual response, we would have to drill down into view model and figure out how
 its being serialized for the response and fit the pieces together in our head. 
 
-This is where the [NMatcher](https://github.com/defrag/NMatcher) library comes in place. It allows us to assert JSON/XML responses without caring about 
-certain pieces of the response. Lets rework our test case in the next section while expanding our case with additional one for creation of the venue.
+This is where the [NMatcher](https://github.com/defrag/NMatcher) library comes in play. Lets rework our test case in the next section while expanding our case with additional one for creation of the venue.
 
 ## Functional testing using TestServer and NMatcher
 
 We can use NMatcher to assert the proper JSON and leave out any application specific details when testing
 our path from `Request` to `Response`. This make our test fully functional, as we take the raw input and assert the
-raw output. This way we make sure every piece of code responsible for manipulating the HTTP pipeline was hit, all request translation was done properly and the response output is what we expect. It also serves as a great documentation for any developer that wants to use our API (and for ourselves as well).
+raw output. This way we make sure every piece of code responsible for manipulating the HTTP pipeline was hit, all request translation was done properly and the response output is what we expect. It also serves as a great documentation for any developer that wants to use our API (and for ourselves as well). We also can use the its functionality to omit some 
+parts of the response we don't care about.
 
 ```csharp
 [Fact]
@@ -146,7 +146,7 @@ public async Task test_creation_of_venues()
     var payload = @"
         {
             ""Name"": "".NET meetup Manhattan"",
-            ""Address"": ""Florianska 1"",
+            ""Address"": ""NY, Broadway St."",
             ""Seats"": ""10"",
             ""DiscountCoupons"": [
                 {""CouponCode"": ""PC0001"", ""ProductName"": ""Awesome PC"" },
