@@ -64,7 +64,7 @@ For the sake of simplicity, we added just a 5 character random execution identif
 
 ## Writer Monad and what we can learn from it
 
-In short, writer monad lets up easly attach any information to the computed result value. It makes functions deterministic and side-effect free. We can set up a sequence of operations that produces a value along with the information about steps being taken to get  it. Lets look at the most trivial mutliplication example in `Haskell`:
+In short, writer monad lets up easly attach any information to the computed result value. It makes functions deterministic and side-effect free. We can describe a sequence of operations that produce a value along with the information about steps being taken to get it. Lets look at the most trivial mutliplication example in `Haskell`:
 
 ```haskell
 type Result = Writer [String] Int
@@ -85,7 +85,56 @@ main = do
   -- (50,["Got number: 10","Got number: 5","multiplying 10 and 5"])
 ```
 
-We could modify our application not to log everything right away, rather
+Even if we don't follow functional approach, we still can structure our object oriented
+code to achieve the similar result. The usual OO design could evole as follows:
+
+```csharp
+public sealed class LoggingMutlitpier
+{
+    private readonly ILogger _logger;
+
+    public LoggingMutlitpier(ILogger logger)
+    {
+        _logger = logger;
+    }
+
+    public int Multiply(int a, int b)
+    {
+        _logger.LogInformation($"Got number: {a}");
+        _logger.LogInformation($"Got number: {b}");
+        _logger.LogInformation($"Multiplying {a} and {b}");
+
+        return a * b;
+    }
+}
+
+public sealed class Mutlitpier
+{
+    public MultiplicationResult Multiply(int a, int b)
+    {
+        return new MultiplicationResult(a * b, new [] {
+            $"Got number: {a}",
+            $"Got number: {b}",
+            $"Multiplying {a} and {b}"
+        });
+    }
+
+    public sealed class MultiplicationResult
+    {
+        public MultiplicationResult(int result, IEnumerable<string> logs)
+        {
+            Result = result;
+            Logs = logs;
+        }
+
+        public int Result { get; }
+        public IEnumerable<string> Logs { get; }
+    }
+}
+
+```
+
+Lets modify our application not to log everything right away, rather
 compute parts step by step, while attaching information to it. If we use actor model based application, we could
 just set up actors to send back the message with results along with the logs and after 
 the whole job completes, just forward the full result along with logs to the place which will do the actual logging IO. 
