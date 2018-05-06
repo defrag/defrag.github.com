@@ -8,3 +8,5 @@ url: "https://defrag.github.io" # the base hostname & protocol for your site, e.
 twitter_username: defrag2
 github_username:  defrag
 linkedin_username: dabrowski-michal
+plugins:
+  - jekyll-feed
