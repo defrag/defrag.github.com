@@ -60,7 +60,7 @@ Not good at all. We've completely lost the ability to track whats going on in ou
 [Thread-002][Information][exec-2dznt] Job "daily routine Y" finished successfully.
 ```
 
-For the sake of simplicity, we added just a 5 character random execution identifier. What could be in our mind for this id, would probably be `Guid` or some type of hash. Things wouldn't have been clearer at all in my opinion. Things would go even more off the rail when we would add additional nodes to our processing pool. We need to do better.
+For the sake of simplicity, we added just a 5 character random execution identifier. In real world, this identifier would probably be `Guid` or some type of hash. Not lets imagine we would add additional nodes to our processing pool. Logs would grow and ability to track the course of single operation wouldn't be easy at all in my opinion. We need to do better.
 
 ## Writer Monad and what we can learn from it
 
