@@ -93,7 +93,7 @@ writeBatches :: [[Batch]] -> IO()
 
 processReport :: ReportType -> WriterT [String] IO ()
 processReport rt = do
-  tell ["Preparing to to process report"]
+  tell ["Preparing to process report"]
   contents <- liftIO $ fetchReportContents rt  
   tell ["Fetching report contents for " ++ show rt]  
   let batches = prepareBatches contents
@@ -105,6 +105,7 @@ processReport rt = do
 mainFunc = do
   res <- execWriterT (processReport DailyPerformanceReport)
   print $ res
+  -- ["Preparing to process report","Fetching report contents for DailyPerformanceReport","Created batches: 2","Written batches: 2"]
 ```
 
 We can get away from the examples from Haskell at this moment and even if we don't follow functional approach, we still can structure our object oriented
