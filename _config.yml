@@ -2,7 +2,7 @@ title: DeFraG's thoughts on web
 markdown: kramdown
 theme: minima
 description: >- # this means to ignore newlines until "baseurl:"
-  You can contact me
+  DeFraG's tech blog 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://defrag.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: defrag2
