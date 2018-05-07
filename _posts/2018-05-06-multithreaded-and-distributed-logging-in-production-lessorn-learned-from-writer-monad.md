@@ -85,8 +85,30 @@ main = do
   -- (50,["Got number: 10","Got number: 5","multiplying 10 and 5"])
 ```
 
-Even if we don't follow functional approach, we still can structure our object oriented
-code to achieve the similar result. The usual OO design could evole as follows:
+If we took our report example, things may look something like this:
+```haskell
+fetchReportContents :: ReportType -> IO (ReportContents)
+prepareBatches :: ReportContents -> [[Batch]]
+writeBatches :: [[Batch]] -> IO()
+
+processReport :: ReportType -> WriterT [String] IO ()
+processReport rt = do
+  tell ["Preparing to to process report"]
+  contents <- liftIO $ fetchReportContents rt  
+  tell ["Fetching report contents for " ++ show rt]  
+  let batches = prepareBatches contents
+  tell ["Created batches: " ++ show (length batches)]    
+  res <- liftIO $ writeBatches batches
+  tell ["Written batches: " ++ show (length batches)]    
+  return ()
+
+mainFunc = do
+  res <- execWriterT (processReport DailyPerformanceReport)
+  print $ res
+```
+
+We can get away from the examples from Haskell at this moment and even if we don't follow functional approach, we still can structure our object oriented
+code to achieve the similar result. Lets take the trivial logging example. The usual OO design could evole as follows:
 
 ```csharp
 public sealed class LoggingMutlitpier
