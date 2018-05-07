@@ -1,8 +1,8 @@
 ---
 layout: page
-title:  "Actor model based logging in production - lessons learned from Writer Monad"
+title:  "Multithreaded and distributed logging in production - lessons learned from Writer Monad"
 date:   2018-05-06
-description:  "Actor model based logging in production - lessons learned from Writer Monad"
+description:  "Multithreaded and distributed logging in production - lessons learned from Writer Monad"
 tags:
     - Akka
     - Akka.NET
