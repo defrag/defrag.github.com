@@ -81,7 +81,7 @@ multiply x y = do
 
 main :: IO () 
 main = do
-  print $ runWriter (compute 10 5)
+  print $ runWriter (multiply 10 5)
   -- (50,["Got number: 10","Got number: 5","multiplying 10 and 5"])
 ```
 
