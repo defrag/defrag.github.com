@@ -112,11 +112,11 @@ We can get away from the examples from Haskell at this moment and even if we don
 code to achieve the similar result. Lets take the trivial logging example. The usual OO design could evole as follows:
 
 ```csharp
-public sealed class LoggingMutlitpier
+public sealed class LoggingMultiplier
 {
     private readonly ILogger _logger;
 
-    public LoggingMutlitpier(ILogger logger)
+    public LoggingMultiplier(ILogger logger)
     {
         _logger = logger;
     }
