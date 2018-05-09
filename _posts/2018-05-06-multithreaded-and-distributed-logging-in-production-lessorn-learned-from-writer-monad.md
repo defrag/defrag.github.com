@@ -85,7 +85,7 @@ main = do
   -- (50,["Got number: 10","Got number: 5","multiplying 10 and 5"])
 ```
 
-If we took our report example, things may look something like this:
+If we took our report example, things may look something like this (error handling ommited for simplification):
 ```haskell
 fetchReportContents :: ReportType -> IO (ReportContents)
 prepareBatches :: ReportContents -> [[Batch]]
