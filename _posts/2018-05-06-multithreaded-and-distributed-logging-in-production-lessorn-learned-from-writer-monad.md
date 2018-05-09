@@ -64,7 +64,7 @@ For the sake of simplicity, we added just a 5 character random execution identif
 
 ## Writer Monad and what we can learn from it
 
-In short, writer monad lets up easly attach any information to the computed result value. It makes functions deterministic and side-effect free. We can describe a sequence of operations that produce a value along with the information about steps being taken to get it. Lets look at the most trivial mutliplication example in `Haskell`:
+In short, writer monad lets us easily attach any information to the computed result value. It makes functions deterministic and side-effect free. We can describe a sequence of operations that produce a value along with the information about steps being taken to get it. Lets look at the most trivial mutliplication example in `Haskell`:
 
 ```haskell
 type Result = Writer [String] Int
