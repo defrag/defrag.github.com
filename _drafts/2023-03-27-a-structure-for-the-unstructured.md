@@ -133,7 +133,7 @@ It's definitely a step in the right direction.
 The idea of restructuring the applications came after inheriting the first Actor based system written in Akka. The structure of actor systems follows a hierarchical design with supervisors, "managers" and other nodes that follow through to the lowest leaf level. Unfortunately by design, nothing was stopping the development of creating an untangled web of communications that spawn in any sort of direction. 
 The Actors could communicate upstream, downstream, in the same level, or to the other levels of totally different topological spaces.
 
-In order to figure out what sort of lifecycle and any subsequent invocations of dependent processes one particular message is responsible for, the whole graph of connections had to be recreated in the brain. Every day the process repeats itself, as our brains are not designed to store that kind of information well. 
+In order to figure out what sort of lifecycle and any subsequent invocations of dependent processes one particular message is responsible for, the whole graph of connections had to be recreated in the brain. Every day the process repeated itself, as our brains are not designed to store that kind of information well. 
 
 ![Example of communications on all directions](/assets/images/2023-03-27/actors_1.jpeg)
 
@@ -144,12 +144,12 @@ The idea to make it much more developer friendly, was to follow a set of OTP gui
 
 ![Example of communications on upstream/downstream](/assets/images/2023-03-27/actors_2.jpeg)
 
-The sample images may not indicate that much have changed, but imagine
+The sample images may not outline the great difference at first sight, but imagine
 more problems spaces and how the complexity of communications can grow.
 With some rules in place, the components could communicate mostly upstream and downstream up to the top level, and on the top level they could communicate sideways. It could sometimes mean that we are just forwarding messages upstream and to the side, but the benefit of that is that we
 could reason about certain process spaces independently of each other.
 
 I took this idea and tried to re-model layered and per module structure, so we can follow the same set of heuristics.
-It would mean that **in order for us to find all connected components for a single Domain concept, we would have to traverse in depth first approach and find all the connections downstream**. That would eliminate a whole lot of space to find the connections between our logical model that forms the functionality as a whole.
+It would mean that **in order for us to find all connected components for a single Domain concept, we would have to traverse in depth first approach and find all the connections downstream**. That would eliminate a whole lot of search space to find the connections between our logical model and what forms the functionality as a whole. 
 
-With a standard four layered approach it is hard to take a given model and find all its connections, as we have a parallel layer separation for domain space, application, infrastructure and user interface concerns. The byproduct of that is that we always need to traverse upstream and to the sides to find all components that may be related to our model itself.
+With a standard four layered approach **it is hard to take a given model and find all its connections**, as we have a parallel layer separation for domain space, application, infrastructure and user interface concerns. The byproduct of that is that we always need to traverse upstream and to the sides to find all components that may be related to our model itself.
