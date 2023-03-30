@@ -45,10 +45,26 @@ Several highly starred templates on Github for Clean Architecture reveal the ini
 
 Having a clean separation of our Domain layer is a great treat, but do we really know what is going on exactly? Do we know what sort of project it is? Does it handle invoices, file management, scheduling? In order for us to know, we would have to traverse between folders inside the Domain project, glue the representation of the problem space in our head and then we are able to come to conclusions. The structure is definitely  **not domain revealing**.
 
-
 On top of that, what happens if our project has a set or problem spaces that we may want to keep separated? Would we pour all concepts together inside `Entities`, `ValueObjects` and more? **Keeping a single layer of separation for all connected, semi-connected or disjoint problem spaces can lead up to the Domain Spaghetti** itself. All concepts will be separated by a technical layer, which should provide some degree of separation, but what stops us from entanglement of all concepts like Shipments, Scheduling, Simulations, Audit Log, File Management and more together and dependent on each other? 
 
 The concept of **Bounded Contexts** is something that can partially help us to solve the problem and we'll cover that in the following section.
+
+### Side note
+Imaging a use case where you would separate your holiday files into logical layers as follows:
+```bash
+├───my-children-photos
+└───my-photos
+    ├───photos-in-the-woods
+    │   └───photos-during-the-day
+    │           1.jpg
+    │
+    └───photos-on-the-beach
+        └───photos-during-the-day
+                1.jpg
+```                
+
+There is definitely a logical separation for this use case, and the physical realm of the structure follows the logical realm that we created. Imagine tho trying to figure out
+which set of photos were taken and part of the given trip. It’s definitely not possible without a lot of labor. Sometimes I think of this example when discussing the **logical -> physical discrepancy** in the way we structure software projects.
 
 ## Models arise
 
@@ -130,7 +146,7 @@ It's definitely a step in the right direction.
 
 ## Upstream/downstream connected components
 
-The idea of restructuring the applications came after inheriting the first Actor based system written in Akka. The structure of actor systems follows a hierarchical design with supervisors, "managers" and other nodes that follow through to the lowest leaf level. Unfortunately by design, nothing was stopping the development of creating an untangled web of communications that spawn in any sort of direction. 
+The idea of restructuring the applications came after inheriting the first Actor based system written in Akka. The structure of actor systems follows a hierarchical design which consists of supervisors, "managers" and other nodes that follow through to the lowest leaf level. Unfortunately by design, nothing was stopping the development of creating an untangled web of communications that spawn in any sort of direction. 
 The Actors could communicate upstream, downstream, in the same level, or to the other levels of totally different topological spaces.
 
 In order to figure out what sort of lifecycle and any subsequent invocations of dependent processes one particular message is responsible for, the whole graph of connections had to be recreated in the brain. Every day the process repeated itself, as our brains are not designed to store that kind of information well. 
@@ -152,4 +168,76 @@ could reason about certain process spaces independently of each other.
 I took this idea and tried to re-model layered and per module structure, so we can follow the same set of heuristics.
 It would mean that **in order for us to find all connected components for a single Domain concept, we would have to traverse in depth first approach and find all the connections downstream**. That would eliminate a whole lot of search space to find the connections between our logical model and what forms the functionality as a whole. 
 
-With a standard four layered approach **it is hard to take a given model and find all its connections**, as we have a parallel layer separation for domain space, application, infrastructure and user interface concerns. The byproduct of that is that we always need to traverse upstream and to the sides to find all components that may be related to our model itself.
+**With a standard four layered approach it is hard to take a given model and find all its connections**, as we have a parallel layer separation for domain space, application, infrastructure and user interface concerns. The byproduct of that is that we always need to traverse upstream and to the sides to find all components that may be related to our model itself.
+
+## Structuring the application once more
+
+Whenever we structure the domain applications, data engineering applications, or libraries, the approach of putting our main models or structures in the root, will make the application
+intent revealing for the reader and we will be able to indentify the path in which we may find the connected components that forms the solution space as a whole.
+
+Nothing is stopping us from using layers if we are working on business domain specific problem space. We would just make sure the folder or namespace explicitly separates
+the domain from the other concerns. There might be some different rules
+if we want to maintain the structure cross layers, as definitely some paralell connections will arise, but we should strive to minimze them. 
+
+We can illustrate the structure on the toy example of a generic domain of handling file uploads. Let’s say our problem space needs to handle file uploads to any arbitrary storage and maintain the index of those files, so we can associate them with any given subject.
+
+```bash
+├── File.cs
+├── FileContent.cs
+├── FileIndexEntry.cs
+├── FileName.cs
+├── FileService.cs
+├── IFileIndex.cs
+├── IFileSystem.cs
+├── _Infrastructure
+│      ├── AzureBlobFileSystem.cs
+|      └── DatabaseFileIndex.cs
+```
+
+If we fight the urge to put everything in a folder that might indicate a technological separation like Service, Entity, Repository, we would end up with most of the files at the root level. Everything related to the main concept of File would be as close to the model as needed. 
+I call this concept **Domain Proximity Meter**. It indicates how far we need to reach in order to form a whole problem space from its main domain model. There
+could be queries for the model, repositories, services, implementations, user interface concerns that are associated with one logical component. The further we need to search for it’s connected parts, the less ergonomic the whole space formulation becomes.
+
+We keep the connections to the main components downstream and we are able to find the connections easily.
+
+If we like the CQRS approach, the sample package structure for a module that is responsible for running some shipment movement simulations can look as follows:
+
+```bash
+├── ISimulations.cs
+├── Simulation.cs
+├── SimulationCreator.cs
+├── SimulationRunner.cs
+├── _CQRS
+│   ├── Commands
+│   │   ├── CreateSimulationForShipment.cs
+│   ├── Exposing
+│   │   ├── SimulationsCommandBus.cs
+│   │   └── SimulationsExposing.cs
+│   ├── Queries
+│   │   └── ISimulationQueries.cs
+│   ├── SimulationTestData.cs
+│   └── _Infrastructure
+│       ├── Database
+│       │   ├── DatabaseSimulationQueries.cs
+│       │   ├── DatabaseSimulations.cs
+```
+
+Another great rule is to strive to **eliminate dependencies between namespaces**. In normal package design, the package manager would detect cycles and prevent us from doing such things, but unfortunately the free folder structure will allow us to create cycles.
+We could use static analysis tools to detect them early on.
+For the example above it would mean that the general CQRS rule of commands not depending on queries enforced by design.
+
+The structure still follows upstream/downstream design, but the introduction of explicit layers (denoted by underscore), will still force us to make some parallel connections. As mentioned above, they will happen, but we should strive to minimize them.
+
+
+## Summary
+
+The ideas formulated in the article may not look like anything spectacular, but as a manager responsible for deliveries or products, I have found them to be actually profound on the microscoping level of the software architecture.
+Developers didn't need to think about upfront separation. They could just form their models, write the contracts for any potential side effectful operations on the models and formulate the solution as a whole. The rules worked well for larger domains, where just folders provided additional structure for a sub problem space. The ability to find all related components quickly and closely made a tremendous impact on the daily deliveries of new features and the low level of regressions.
+
+Here are a few rules to make sure we summarize the content of the article:
+* Focus on the main model first when working on a problem
+* Thread downstream from the model and try to keep connected components close as possible
+* Avoid cycles in namespaces (huge)
+* If using layered approach, consider physical separation indicating layer switch (like denoted by underscore or similar)
+
+I hope some of the readers will reconsider the general structure of the applications and find it useful. It's definitely important to keep the conversation open and always iterate on top of the knowledge we've already got.
