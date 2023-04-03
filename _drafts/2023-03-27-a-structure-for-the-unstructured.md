@@ -178,6 +178,11 @@ It would mean that **in order for us to find all connected components for a sing
 
 **With a standard four layered approach it is hard to take a given model and find all its connections**, as we have a parallel layer separation for domain space, application, infrastructure and user interface concerns. The byproduct of that is that we always need to traverse upstream and to the sides to find all components that may be related to our model itself.
 
+> Note that the shared libraries designed to be used by different modules
+can be referenced in multiple places inside our tree structure with no problem. 
+Thats what they are designed for in the first place.
+
+
 ## Evolving structure
 
 Whenever we structure the domain applications, data engineering applications, or libraries, the approach of putting our main models or structures in the root, will make the application
@@ -345,7 +350,6 @@ We could use static analysis tools to detect them early on.
 For the example above it would mean that the general CQRS rule of commands not depending on queries enforced by design.
 
 The structure still follows upstream/downstream design, but the introduction of explicit layers (denoted by underscore), will still force us to make some parallel connections. As mentioned above, they will happen, but we should strive to minimize them.
-
 
 ## Summary
 
