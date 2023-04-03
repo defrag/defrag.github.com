@@ -308,8 +308,11 @@ If we like the CQRS approach, the sample structure could evolve into something a
     ├───Queries
     │   │   IShipmentQueries.cs
     │   │
-    │   └───Delays
-    │           IDelayQueries.cs
+    │   ├───Delays
+    │   │       IDelayQueries.cs
+    │   │
+    │   └───Deliveries
+    │           IDeliveryQueries.cs
     │
     └───_Infrastructure
         │   DatabaseShipments.cs
@@ -321,6 +324,7 @@ If we like the CQRS approach, the sample structure could evolve into something a
         │
         └───Deliveries
                 DocumentDbDatabaseDeliveries.cs
+                InMemoryDeliveries.cs
 ```
 
 In the approach listed above, we would keep our domain close to the root and then thread down into application and infrastructure layers. We separate out commands and queries and inside each layer, we replicate the structure to have a symmetry with our domain space. 
