@@ -170,57 +170,163 @@ It would mean that **in order for us to find all connected components for a sing
 
 **With a standard four layered approach it is hard to take a given model and find all its connections**, as we have a parallel layer separation for domain space, application, infrastructure and user interface concerns. The byproduct of that is that we always need to traverse upstream and to the sides to find all components that may be related to our model itself.
 
-## Structuring the application once more
+## Evolving structure
 
 Whenever we structure the domain applications, data engineering applications, or libraries, the approach of putting our main models or structures in the root, will make the application
 intent revealing for the reader and we will be able to indentify the path in which we may find the connected components that forms the solution space as a whole.
 
-Nothing is stopping us from using layers if we are working on business domain specific problem space. We would just make sure the folder or namespace explicitly separates
-the domain from the other concerns. There might be some different rules
-if we want to maintain the structure cross layers, as definitely some paralell connections will arise, but we should strive to minimze them. 
-
-We can illustrate the structure on the toy example of a generic domain of handling file uploads. Let’s say our problem space needs to handle file uploads to any arbitrary storage and maintain the index of those files, so we can associate them with any given subject.
+We can illustrate the structure evolution on the toy example of a domain for shipping arbitrary objects. 
 
 ```bash
-├── File.cs
-├── FileContent.cs
-├── FileIndexEntry.cs
-├── FileName.cs
-├── FileService.cs
-├── IFileIndex.cs
-├── IFileSystem.cs
-├── _Infrastructure
-│      ├── AzureBlobFileSystem.cs
-|      └── DatabaseFileIndex.cs
+│   IShipments.cs
+│   Shipment.cs
+│   ShipmentId.cs
+│   ShipmentService.cs
+│   ShipmentStop.cs
+│
+└───_Infrastructure
+        DatabaseShipments.cs
+        InMemoryShipments.cs
 ```
 
-If we fight the urge to put everything in a folder that might indicate a technological separation like Service, Entity, Repository, we would end up with most of the files at the root level. Everything related to the main concept of File would be as close to the model as needed. 
+If we fight the urge to put everything in a folder upfront via technological separation like Service, Entity, Repository, we would end up with most of the files at the root level. Everything related to the main concept of Shipment would be as close to the model as needed. 
+
 I call this concept **Domain Proximity Meter**. It indicates how far we need to reach in order to form a whole problem space from its main domain model. There
 could be queries for the model, repositories, services, implementations, user interface concerns that are associated with one logical component. The further we need to search for it’s connected parts, the less ergonomic the whole space formulation becomes.
 
-We keep the connections to the main components downstream and we are able to find the connections easily.
 
-If we like the CQRS approach, the sample package structure for a module that is responsible for running some shipment movement simulations can look as follows:
+Now let's say we introduce a sub problem space of reporting delays. Our structure could evolve as follows:
 
 ```bash
-├── ISimulations.cs
-├── Simulation.cs
-├── SimulationCreator.cs
-├── SimulationRunner.cs
-├── _CQRS
-│   ├── Commands
-│   │   ├── CreateSimulationForShipment.cs
-│   ├── Exposing
-│   │   ├── SimulationsCommandBus.cs
-│   │   └── SimulationsExposing.cs
-│   ├── Queries
-│   │   └── ISimulationQueries.cs
-│   ├── SimulationTestData.cs
-│   └── _Infrastructure
-│       ├── Database
-│       │   ├── DatabaseSimulationQueries.cs
-│       │   ├── DatabaseSimulations.cs
+│   IShipments.cs
+│   Shipment.cs
+│   ShipmentId.cs
+│   ShipmentService.cs
+│   ShipmentStop.cs
+│
+├───Delays
+│   │   DelayReport.cs
+│   │   DelayReson.cs
+│   │   DelayService.cs
+│   │   IDelayReports.cs
+│   │
+│   └───_Infrastructure
+│           DatabaseDelayReports.cs
+│           InMemoryDelayReports.cs
+│
+└───_Infrastructure
+        DatabaseShipments.cs
+        InMemoryShipments.cs
 ```
+
+We have separated the sub problem space of delay reports into its own folder. Everything related to delay reports can be found inside the `Delays` folder itself. On top of that, the `DelayReport` can reference the `ShipmentId` from the root level, preserving our rules about component dependencies.
+
+
+If more and more problem spaces connected to our main concept evolves, we still keep our rules and follow the guidelines. Let's say we are now modeling the state and transitions of
+all activities that can happen from the moment the `shipment delivery` is started, to the moment the shipment is delivered.
+
+
+```bash
+│   IShipments.cs
+│   Shipment.cs
+│   ShipmentId.cs
+│   ShipmentService.cs
+│   ShipmentStop.cs
+│
+├───Delays
+│   │   DelayReport.cs
+│   │   DelayReson.cs
+│   │   DelayService.cs
+│   │   IDelayReports.cs
+│   │
+│   └───_Infrastructure
+│           DatabaseDelayReports.cs
+│           InMemoryDelayReports.cs
+│
+├───Deliveries
+│   │   Delivery.cs
+│   │   DeliveryActivity.cs
+│   │   DeliveryHistory.cs
+│   │   DeliveryService.cs
+│   │   IDeliveries.cs
+│   │
+│   └───_Infrastructure
+│           DocumentDbDatabaseDeliveries.cs
+│           InMemoryDeliveries.cs
+│
+└───_Infrastructure
+        DatabaseShipments.cs
+        InMemoryShipments.cs
+```        
+
+Not much has changed, as we have just separated the problem into its own substructure.
+This kind of approach **enforces modular design of the applications** and makes sure
+we make conscious decisions as our application evolves. All related components are close
+to each other, making it easy to digest.
+
+
+## Evolving structure based around CQRS
+
+If we are fans of Commands, Queries and strict layers, nothing is stopping us from using them with the approach described above. 
+We would just make sure the folder or namespace explicitly separates
+the domain from the other concerns. There might be some different rules
+if we want to maintain the structure cross layers, as definitely some paralell connections will arise, but we should strive to minimze them.
+
+If we like the CQRS approach, the sample structure could evolve into something as follows:
+
+```bash
+│   IShipments.cs
+│   Shipment.cs
+│   ShipmentId.cs
+│   ShipmentStop.cs
+│
+├───Delays
+│       DelayReport.cs
+│       DelayReson.cs
+│       IDelayReports.cs
+│
+├───Deliveries
+│       Delivery.cs
+│       DeliveryActivity.cs
+│       DeliveryHistory.cs
+│       IDeliveries.cs
+│
+└───_CQRS
+    │   TestData.cs
+    │
+    ├───Commands
+    │   │   AddNewShipment.cs
+    │   │   CancelShipment.cs
+    │   │
+    │   ├───Delays
+    │   │       ReportDelay.cs
+    │   │
+    │   └───Deliveries
+    │           PerformActivity.cs
+    │           StartDelivery.cs
+    │
+    ├───Queries
+    │   │   IShipmentQueries.cs
+    │   │
+    │   └───Delays
+    │           IDelayQueries.cs
+    │
+    └───_Infrastructure
+        │   DatabaseShipments.cs
+        │   InMemoryShipments.cs
+        │
+        ├───Delays
+        │       DatabaseDelayReports.cs
+        │       InMemoryDelayReports.cs
+        │
+        └───Deliveries
+                DocumentDbDatabaseDeliveries.cs
+```
+
+In the approach listed above, we would keep our domain close to the root and then thread down into application and infrastructure layers. We separate out commands and queries and inside each layer, we replicate the structure to have a symmetry with our domain space. 
+I find this to be a very ergonomic structure.
+
+## Eliminate dependencies between namespaces
 
 Another great rule is to strive to **eliminate dependencies between namespaces**. In normal package design, the package manager would detect cycles and prevent us from doing such things, but unfortunately the free folder structure will allow us to create cycles.
 We could use static analysis tools to detect them early on.
@@ -238,6 +344,7 @@ Here are a few rules to make sure we summarize the content of the article:
 * Focus on the main model first when working on a problem
 * Thread downstream from the model and try to keep connected components close as possible
 * Avoid cycles in namespaces (huge)
-* If using layered approach, consider physical separation indicating layer switch (like denoted by underscore or similar)
+* If using layered approach, consider physical separation indicating layer switch (like denoted by underscore or similar) 
+* If using layered approacha,follow the symmetry cross layers that would replicate the structure of the domain layer itself.
 
 I hope some of the readers will reconsider the general structure of the applications and find it useful. It's definitely important to keep the conversation open and always iterate on top of the knowledge we've already got.
