@@ -1,8 +1,8 @@
 ---
 layout: page
-title:  "A structure for the unstructured. A different take on Clean Architecture for domain centric applications"
+title:  "Structure for the Unstructured. A Different Perspective on Clean Architecture for Domain-Centric Applications"
 date:   2023-03-27
-description:  "A structure for the unstructured. A different take on Clean Architecture for domain centric applications"
+description:  Sstructure for the Unstructured. A Different Perspective on Clean Architecture for Domain-Centric Applications"
 tags:
     - Domain Driven Design
     - Clean Architecture
@@ -146,7 +146,11 @@ It's definitely a step in the right direction.
 
 ## Upstream/downstream connected components
 
-The idea of restructuring the applications came after inheriting the first Actor based system written in Akka. The structure of actor systems follows a hierarchical design which consists of supervisors, "managers" and other nodes that follow through to the lowest leaf level. Unfortunately by design, nothing was stopping the development of creating an untangled web of communications that spawn in any sort of direction. 
+The idea of restructuring the applications came after inheriting the first Actor based system written in Akka. 
+
+>Actors are isolated units of computation that communicate with each other through message passing, making it easier to write highly concurrent and fault-tolerant applications in a distributed environment.
+
+The structure of actor systems follows a hierarchical design which consists of supervisors, "managers" and other nodes that follow through to the lowest leaf level. Unfortunately by design, nothing was stopping the development of creating an untangled web of communications that spawn in any sort of direction. 
 The Actors could communicate upstream, downstream, in the same level, or to the other levels of totally different topological spaces.
 
 In order to figure out what sort of lifecycle and any subsequent invocations of dependent processes one particular message is responsible for, the whole graph of connections had to be recreated in the brain. Every day the process repeated itself, as our brains are not designed to store that kind of information well. 
@@ -351,4 +355,5 @@ Here are a few rules to make sure we summarize the content of the article:
 * If using layered approach, consider physical separation indicating layer switch (like denoted by underscore or similar) 
 * If using layered approacha,follow the symmetry cross layers that would replicate the structure of the domain layer itself.
 
-I hope some of the readers will reconsider the general structure of the applications and find it useful. It's definitely important to keep the conversation open and always iterate on top of the knowledge we've already got.
+I hope some of the readers will reconsider the general structure of the applications and find it useful. We just scratched the surface and there are many other things to consider when structuring the application, but hopefully the ideas from the article could be a good starting point.
+It's definitely important to keep the conversation open and always iterate on top of what we've already know.
