@@ -153,6 +153,10 @@ The idea of restructuring the applications came after inheriting the first Actor
 The structure of actor systems follows a hierarchical design which consists of supervisors, "managers" and other nodes that follow through to the lowest leaf level. Unfortunately by design, nothing was stopping the development of creating an untangled web of communications that spawn in any sort of direction. 
 The Actors could communicate upstream, downstream, in the same level, or to the other levels of totally different topological spaces.
 
+Problems from this kind of communication can arise when changes made to one component have unintended consequences on other components, leading to errors, bugs, and unexpected behavior.
+Additionally, dependencies can make it difficult to modify or replace individual components without affecting the entire system, making it harder to evolve the software over time.
+ 
+
 In order to figure out what sort of lifecycle and any subsequent invocations of dependent processes one particular message is responsible for, the whole graph of connections had to be recreated in the brain. Every day the process repeated itself, as our brains are not designed to store that kind of information well. 
 
 ![Example of communications on all directions](/assets/images/2023-03-27/actors_1.jpeg)
@@ -166,7 +170,7 @@ The idea to make it much more developer friendly, was to follow a set of OTP gui
 
 The sample images may not outline the great difference at first sight, but imagine
 more problems spaces and how the complexity of communications can grow.
-With some rules in place, the components could communicate mostly upstream and downstream up to the top level, and on the top level they could communicate sideways. It could sometimes mean that we are just forwarding messages upstream and to the side, but the benefit of that is that we
+With some rules in place, the components could communicate mostly upstream and downstream up to the top level, and on the top level they could communicate sideways with other components inside the same hierachical space. It could sometimes mean that we are just forwarding messages upstream and to the side, but the benefit of that is that we
 could reason about certain process spaces independently of each other.
 
 I took this idea and tried to re-model layered and per module structure, so we can follow the same set of heuristics.
@@ -355,5 +359,5 @@ Here are a few rules to make sure we summarize the content of the article:
 * If using layered approach, consider physical separation indicating layer switch (like denoted by underscore or similar) 
 * If using layered approacha,follow the symmetry cross layers that would replicate the structure of the domain layer itself.
 
-I hope some of the readers will reconsider the general structure of the applications and find it useful. We just scratched the surface and there are many other things to consider when structuring the application, but hopefully the ideas from the article could be a good starting point.
+I hope some of the readers will reconsider the general structure of the applications and find it useful. We just scratched the surface and there are many other things to consider when structuring the application (like cross context communications), but hopefully the ideas from the article could be a good starting point.
 It's definitely important to keep the conversation open and always iterate on top of what we've already know.
