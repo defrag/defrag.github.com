@@ -100,14 +100,11 @@ The structures similar to the listing above I have found throughout many years o
 The set of boundaries around models is known as **Bounded Context** separation.
 It defines the scope of the model and separates different areas of the domain into smaller parts, each with its own language, concepts, and rules. Bounded contexts help manage the complexity of the domain, ensuring the model accurately represents the business requirements and is cohesive and consistent. It is worth mentioning that having a set of boundaries is useful not only for business domains, but for any technical and functional domains as well.
 
-
 In order to have a visible line that separates given set of models, we need a **physical separation** of those contexts. Physical separation can be a `namespace, folder, package`, depending on the language we are operating within.
 
-
->Bounded Contexts itself may not be enought, and inside one we should still strive for a modular design that would separate sub problems around our core models.
+>Bounded Contexts itself may not be enought and inside one context we should still strive for a modular design that would separate sub problems around our core models.
 
 Having a physical separation makes us more principled in the way we structure modules and communications between modules itself. The approach to structuring applications called **Modular Monolith** takes that premise and enforces the physical separations of business concerns. This is a great step towards more maintainable software.
-
 
 The given example from open source project looks as follows:
 
@@ -146,7 +143,6 @@ It's definitely a step in the right direction.
 
 ## Dissecting Structure with Upstream/Downstream Connected Components
 
-
 The idea of restructuring the applications came after inheriting the first Actor based system written in Akka. 
 
 >Actors are isolated units of computation that communicate with each other through message passing, making it easier to write highly concurrent and fault-tolerant applications in a distributed environment.
@@ -154,10 +150,9 @@ The idea of restructuring the applications came after inheriting the first Actor
 The structure of actor systems follows a hierarchical design which consists of supervisors, "managers" and other nodes that follow through to the lowest leaf level. Unfortunately by design, nothing was stopping the development of creating an untangled web of communications that spawn in any sort of direction. 
 The Actors could communicate upstream, downstream, in the same level, or to the other levels of totally different topological spaces.
 
-Problems from this kind of communication can arise when changes made to one component have unintended consequences on other components, leading to errors, bugs, and unexpected behavior.
+Problems from this kind of communication (which spawns in any direction) can arise when changes made to one component have unintended consequences on other components, leading to errors, bugs, and unexpected behavior.
 Additionally, dependencies can make it difficult to modify or replace individual components without affecting the entire system, making it harder to evolve the software over time.
  
-
 In order to figure out what sort of lifecycle and any subsequent invocations of dependent processes one particular message is responsible for, the whole graph of connections had to be recreated in the brain. Every day the process repeated itself, as our brains are not designed to store that kind of information well. 
 
 ![Example of communications on all directions](/assets/images/2023-03-27/actors_1.jpeg)
@@ -362,7 +357,7 @@ Here are a few rules to make sure we summarize the content of the article:
 * Thread downstream from the model and try to keep connected components close as possible
 * Avoid cycles in namespaces (huge)
 * If using layered approach, consider physical separation indicating layer switch (like denoted by underscore or similar) 
-* If using layered approacha,follow the symmetry cross layers that would replicate the structure of the domain layer itself.
+* If using layered approach,follow the symmetry cross layers that would replicate the structure of the domain layer itself.
 
 I hope some of the readers will reconsider the general structure of the applications and find it useful. We just scratched the surface and there are many other things to consider when structuring the application (like cross context communications), but hopefully the ideas from the article could be a good starting point.
 It's definitely important to keep the conversation open and always iterate on top of what we've already know.
