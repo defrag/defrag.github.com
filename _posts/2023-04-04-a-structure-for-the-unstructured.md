@@ -1,8 +1,8 @@
 ---
 layout: page
 title:  "Structure for the Unstructured. A Different Perspective on Clean Architecture for Domain-Centric Applications"
-date:   2023-03-27
-description:  Sstructure for the Unstructured. A Different Perspective on Clean Architecture for Domain-Centric Applications"
+date:   2023-04-04
+description:  Structure for the Unstructured. A Different Perspective on Clean Architecture for Domain-Centric Applications"
 tags:
     - Domain Driven Design
     - Clean Architecture
