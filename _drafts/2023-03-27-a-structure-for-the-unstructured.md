@@ -47,7 +47,6 @@ Having a clean separation of our Domain layer is a great treat, but do we really
 
 On top of that, what happens if our project has a set or problem spaces that we may want to keep separated? Would we pour all concepts together inside `Entities`, `ValueObjects` and more? **Keeping a single layer of separation for all connected, semi-connected or disjoint problem spaces can lead up to the Domain Spaghetti** itself. All concepts will be separated by a technical layer, which should provide some degree of separation, but what stops us from entanglement of all concepts like Shipments, Scheduling, Simulations, Audit Log, File Management and more together and dependent on each other? 
 
-The concept of **Bounded Contexts** is something that can partially help us to solve the problem and we'll cover that in the following section.
 
 ### Side note
 Imaging a use case where you would separate your holiday files into logical layers as follows:
@@ -98,13 +97,14 @@ Without providing a set of boundaries around our models, the structure of the pr
 
 The structures similar to the listing above I have found throughout many years of developing software. They can also be found in most of the sample projects on Github. On a smaller scale it usually works fine, but as more and more models need to interact with each other in different contexts, the lack of separation in the scope of single logical boundary can lead to confusion in the long run.
 
-
 The set of boundaries around models is known as **Bounded Context** separation.
 It defines the scope of the model and separates different areas of the domain into smaller parts, each with its own language, concepts, and rules. Bounded contexts help manage the complexity of the domain, ensuring the model accurately represents the business requirements and is cohesive and consistent. It is worth mentioning that having a set of boundaries is useful not only for business domains, but for any technical and functional domains as well.
 
 
 In order to have a visible line that separates given set of models, we need a **physical separation** of those contexts. Physical separation can be a `namespace, folder, package`, depending on the language we are operating within.
 
+
+>Bounded Contexts itself may not be enought, and inside one we should still strive for a modular design that would separate sub problems around our core models.
 
 Having a physical separation makes us more principled in the way we structure modules and communications between modules itself. The approach to structuring applications called **Modular Monolith** takes that premise and enforces the physical separations of business concerns. This is a great step towards more maintainable software.
 
@@ -144,7 +144,8 @@ of the application defined by its physical boundaries. Inside the module itself 
 
 It's definitely a step in the right direction.
 
-## Upstream/downstream connected components
+## Dissecting Structure with Upstream/Downstream Connected Components
+
 
 The idea of restructuring the applications came after inheriting the first Actor based system written in Akka. 
 
@@ -183,7 +184,7 @@ can be referenced in multiple places inside our tree structure with no problem.
 Thats what they are designed for in the first place.
 
 
-## Evolving structure
+## Evolving Structure
 
 Whenever we structure the domain applications, data engineering applications, or libraries, the approach of putting our main models or structures in the root, will make the application
 intent revealing for the reader and we will be able to indentify the path in which we may find the connected components that forms the solution space as a whole.
@@ -278,7 +279,7 @@ we make conscious decisions as our application evolves. All related components a
 to each other, making it easy to digest.
 
 
-## Evolving structure based around CQRS
+## Evolving Structure Based Around CQRS
 
 If we are fans of Commands, Queries and strict layers, nothing is stopping us from using them with the approach described above. 
 We would just make sure the folder or namespace explicitly separates
@@ -343,7 +344,7 @@ If we like the CQRS approach, the sample structure could evolve into something a
 In the approach listed above, we would keep our domain close to the root and then thread down into application and infrastructure layers. We separate out commands and queries and inside each layer, we replicate the structure to have a symmetry with our domain space. 
 I find this to be a very ergonomic structure.
 
-## Eliminate dependencies between namespaces
+## Eliminate Dependencies Between Namespaces
 
 Another great rule is to strive to **eliminate dependencies between namespaces**. In normal package design, the package manager would detect cycles and prevent us from doing such things, but unfortunately the free folder structure will allow us to create cycles.
 We could use static analysis tools to detect them early on.
