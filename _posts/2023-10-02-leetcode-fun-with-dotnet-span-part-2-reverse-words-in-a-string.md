@@ -7,7 +7,7 @@ tags:
     - High Performance
 ---
 
-In this part of the series, we'll tackle the medium Leetcode problem called **Reverse Words in a String** [https://leetcode.com/problems/faulty-keyboard/](https://leetcode.com/problems/faulty-keyboard/). Like all string manipulation problems, it is a great candidate to ulitize Spans.
+In this part of the series, we'll tackle the medium Leetcode problem called **Reverse Words in a String** [https://leetcode.com/problems/reverse-words-in-a-string/](https://leetcode.com/problems/reverse-words-in-a-string/). Like all string manipulation problems, it is a great candidate to ulitize Spans.
 
 ## Initial approach
 
