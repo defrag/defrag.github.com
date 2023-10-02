@@ -37,7 +37,7 @@ The optimized approach requires us to switch the mindset a little bit, since we 
 * Allocate a destination sequence that we will be filling from the start whenever we have seen a full word in the source sequence.
 * Track the written characters as well as the written characters for every word segment.
 * Whenever we encounter the whitespace, we fill the destination Span with accumulated characters and reset the current character counter.
-* At the exit of the loop, we write the remaining accumulated word if it exists."
+* At the exit of the loop, we write the remaining accumulated word if it exists.
 
 
 ```csharp
