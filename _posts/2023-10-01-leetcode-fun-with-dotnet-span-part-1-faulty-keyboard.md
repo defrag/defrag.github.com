@@ -82,14 +82,14 @@ public static string FaultyKeyboardSpan(string s)
         }
     }
 
-    var slice = acc.Slice(0, ix);
+    var finalString = new string(acc.Slice(0, ix));
     
     if (rentedBuffer is not null)
     {
         ArrayPool<char>.Shared.Return(rentedBuffer);
     }
 
-    return new string(slice);
+    return finalString;
 }
 ```
 
